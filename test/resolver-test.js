@@ -60,10 +60,10 @@ describe('bower-nexus3-resolver', function() {
   describe('releases()', function() {
     it('should return targets and versions for provided versions', function() {
       var _downloadString = sinon.stub(resolver, '_downloadString');
-      var _parseVersions = sinon.stub(resolver, '_parseVersions');
+      var _processVersions = sinon.stub(resolver, '_processVersions');
       _downloadString.withArgs('http://hostname:8080/repository/reponame/packagename/versions.json').returns(
           Q('releases'));
-      _parseVersions.withArgs('releases').returns([
+      _processVersions.withArgs('releases').returns([
         {
           target: 'target',
           version: 'version'
@@ -71,7 +71,7 @@ describe('bower-nexus3-resolver', function() {
       ]);
       return resolver.releases('nexus+http://hostname:8080/repository/reponame/packagename').then(function(releases) {
         _downloadString.restore();
-        _parseVersions.restore();
+        _processVersions.restore();
         assert.deepEqual(releases, [
           {
             target: 'target',
@@ -391,10 +391,10 @@ describe('bower-nexus3-resolver', function() {
     });
   });
 
-  describe('_parseVersions()', function() {
+  describe('_processVersions()', function() {
     it('should parse a string containing Nexus-provided release data into a Bower resolver releases object',
         function() {
-          var actual = resolver._parseVersions('["1.7.1rc1", "2.0.1", "3.0.0-alpha1"]');
+          var actual = resolver._processVersions('["1.7.1rc1", "2.0.1", "3.0.0-alpha1"]');
           var expected = [
             {
               target: '1.7.1rc1',
@@ -453,6 +453,8 @@ describe('bower-nexus3-resolver', function() {
   });
 
   describe('_downloadString()', function() {
+    //avoid timeout 2000 exceeded
+    this.timeout(15000);
     it('should download a string and return it via a promise', function() {
       nock('http://example.com').get('/endpoint').reply(200, 'content');
       return resolver._downloadString('http://example.com/endpoint').then(function(result) {
@@ -481,6 +483,8 @@ describe('bower-nexus3-resolver', function() {
   });
 
   describe('_downloadFile()', function() {
+    //avoid timeout 2000 exceeded
+    this.timeout(15000);
     it('should download a file and return it via a promise', function() {
       nock('http://example.com').get('/endpoint').reply(200, 'abcdefg');
       var tempfile = tmp.fileSync();
