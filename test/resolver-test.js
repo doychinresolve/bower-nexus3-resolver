@@ -394,7 +394,7 @@ describe('bower-nexus3-resolver', function() {
   describe('_processVersions()', function() {
     it('should parse a string containing Nexus-provided release data into a Bower resolver releases object',
         function() {
-          var actual = resolver._processVersions('["1.7.1rc1", "2.0.1", "3.0.0-alpha1"]');
+          var actual = resolver._processVersions(["1.7.1rc1", "2.0.1", "3.0.0-alpha1", "v1.0.0"]);
           var expected = [
             {
               target: '1.7.1rc1',
@@ -407,6 +407,10 @@ describe('bower-nexus3-resolver', function() {
             {
               target: '3.0.0-alpha1',
               version: '3.0.0-alpha1'
+            },
+            {
+              target: 'v1.0.0',
+              version: 'v1.0.0'
             }
           ];
           assert.deepEqual(actual, expected);

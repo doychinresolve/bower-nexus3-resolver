@@ -158,7 +158,7 @@ module.exports = function resolver(bower) {
      * @private
      */
     _processVersions: function(data) {
-      return JSON.parse(data).map(function(entry) {
+      return data.map(function(entry) {
         return {
           target: entry,
           version: entry
@@ -200,7 +200,6 @@ module.exports = function resolver(bower) {
      * @private
      */
     _downloadFile: function(url, filename) {
-      console.log(filename);
       return Q.Promise(function(resolve, reject) {
         axios.get(url, STREAM_CONFIG).then(response => {
           response.data.pipe(fs.createWriteStream(filename)).on('finish', function() {
