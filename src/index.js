@@ -21,7 +21,6 @@ var Q = require('q');
 var tar = require('tar');
 var tmp = require('tmp');
 var url = require('url');
-var zlib = require('zlib');
 
 tmp.setGracefulCleanup();
 
@@ -256,11 +255,6 @@ module.exports = function resolver(bower) {
           reject(err);
         });
 
-        var zlibStream = zlib.createGunzip();
-        zlibStream.on('error', function(err) {
-          reject(err);
-        });
-
         var tarStream = tar.extract({cwd: tempDir.name});
         tarStream.on('error', function(err) {
           reject(err);
@@ -270,7 +264,7 @@ module.exports = function resolver(bower) {
           resolve(self._getTempPath(tempDir.name, beforeFiles, afterFiles));
         });
 
-        readStream.pipe(zlibStream).pipe(tarStream);
+        readStream.pipe(tarStream);
       });
     },
   }
